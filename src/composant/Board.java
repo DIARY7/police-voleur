@@ -81,19 +81,19 @@ public class Board implements Cloneable {
         }
 
        
-        // polices = new Police[3];
-        // polices[0] = new Police(getIntersec(centre_droite));
-        // polices[1] = new Police(getIntersec(centre_gauche));
-        // polices[2] = new Police(getIntersec(centre_haut));
+        polices = new Police[3];
+        polices[0] = new Police(getIntersec(centre_droite));
+        polices[1] = new Police(getIntersec(centre_gauche));
+        polices[2] = new Police(getIntersec(centre_haut));
 
-        // voleur = Voleur.getInstance(getIntersec(centre_milieu));
+        voleur = Voleur.getInstance(getIntersec(centre_milieu));
         
         //Test Piege gauche
-        polices = new Police[3];
-        polices[0] = new Police(getIntersec(centre_milieu));
-        polices[1] = new Police(getIntersec(droite_bas));
-        polices[2] = new Police(getIntersec(droite_haut));
-        voleur = Voleur.getInstance(getIntersec(centre_droite));
+        // polices = new Police[3];
+        // polices[0] = new Police(getIntersec(centre_milieu));
+        // polices[1] = new Police(getIntersec(droite_bas));
+        // polices[2] = new Police(getIntersec(droite_haut));
+        // voleur = Voleur.getInstance(getIntersec(centre_droite));
     }
     
     
@@ -333,24 +333,46 @@ public class Board implements Cloneable {
     }
     //Pour conserver l'etat initial de l'objet
     @Override
-    protected Object clone() throws CloneNotSupportedException {
+	public Object clone() throws CloneNotSupportedException { // Le copy tokony ao @ board clone ihany ny intersection an'ilay voleur
         // TODO Auto-generated method stub
         Intersection[] cp_intersections = new Intersection[intersections.length] ;
         Police[] cp_polices= new Police[this.polices.length];
-        Voleur cp_voleur;
-        for (int i = 0; i < intersections.length; i++) {
-            cp_intersections[i] = (Intersection) intersections[i].clone();
-        } 
+        Voleur cp_voleur = (Voleur) this.voleur.clone();
+        Intersection inter_voleur = new Intersection();
         for (int i = 0; i < this.polices.length; i++) {
             cp_polices[i] = (Police) polices[i].clone();
+            cp_polices[i].setIntersec( (Intersection) (polices[i].getIntersec().clone()));
         }
-        cp_voleur = (Voleur) this.voleur.clone();
+
+        for (int i = 0; i < intersections.length; i++) {
+            if (intersections[i].isEstOccupeVoleurs()) {
+                cp_intersections[i] = cp_voleur.getIntersec();
+            }
+            else if (intersections[i].isEstOccupePolice()) {
+                int indicePolice = getIndicePolice(intersections[i]);
+                cp_intersections[i] = cp_polices[indicePolice].getIntersec(); 
+            }
+            else{
+                cp_intersections[i] = (Intersection) intersections[i].clone();
+            }
+        } 
+        
 
         Board cp_Board = (Board) super.clone();
-        cp_Board.setVoleur(cp_voleur);
         cp_Board.setIntersections(cp_intersections);
+        cp_Board.setVoleur(cp_voleur);
         cp_Board.setPolices(cp_polices);
         
         return cp_Board;
+    }
+    private int getIndicePolice(Intersection intersec){
+        int indicePolice=0;
+        for (int i = 0; i <this.polices.length; i++) {
+            if (intersec.equals(polices[i].getIntersec())) {
+                indicePolice = i;
+                break;
+            }
+        }
+        return indicePolice;
     }
 }

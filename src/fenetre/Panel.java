@@ -82,11 +82,7 @@ public class Panel extends JPanel {
             g.setColor(Color.ORANGE);
             g.drawRect( (int) rectangle_test.getLocation().getX(), (int) rectangle_test.getLocation().getY(), (int) rectangle_test.getWidth(), (int)rectangle_test.getHeight());
         }
-       try {
-        Thread.sleep(100);
-        } catch (Exception e) {
-            // TODO: handle exception
-        }
+       
         this.board.checkGagnant(g);
 
         repaint();

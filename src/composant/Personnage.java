@@ -15,7 +15,7 @@ public abstract class Personnage implements Cloneable {
         this.typePerso = typePerso;
     }
     public Intersection getIntersec() {
-        return intersec;
+        return this.intersec;
     }
     public abstract void setIntersec(Intersection intersec);
 
